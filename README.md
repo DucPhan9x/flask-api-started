@@ -39,6 +39,11 @@ Locally, you can connect to your database using :
 
 ```bash
 $ make database.connect
+$ make database.upgrade
+$ make database.migrate
+$ make database.upgrade
+
+
 ```
 
 ## Development

@@ -6,7 +6,7 @@ class Account(db.Model, BaseModel, metaclass=MetaBaseModel):
 
     __tablename__ = "account"
 
-    uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uid = db.Column(db.String(255), primary_key=True)
     user_name = db.Column(db.String(50))
     password = db.Column(db.String(300))
 
