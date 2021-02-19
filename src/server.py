@@ -1,11 +1,13 @@
 from flask import Flask
 from flask.blueprints import Blueprint
+from flask_bcrypt import Bcrypt
 
 import config
 import routes
 from models import db
 
 server = Flask(__name__)
+bcrypt=Bcrypt(server)
 
 server.debug = config.DEBUG
 server.config["SQLALCHEMY_DATABASE_URI"] = config.DB_URI

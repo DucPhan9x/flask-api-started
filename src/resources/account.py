@@ -13,8 +13,11 @@ class AccountResourceAuth(Resource):
         if request.is_json:
             data = request.get_json()
             account = AccountRepository.logIn(user_name=data['user_name'], password=data['password'])
-            return {"message": "Login successfully","account": {"uid":account.uid,"user_name": account.user_name}, "token":"XgbuVEXBU5gtSKdbQRP1Zbbby1i1",
-            "photo_url":"assets/images/avatars/Abbott.jpg" ,"status": 200}
+            if account:
+                return {"message": "Login successfully","account": {"uid":account.uid,"user_name": account.user_name}, "token":"XgbuVEXBU5gtSKdbQRP1Zbbby1i1",
+                      "photo_url":"assets/images/avatars/Abbott.jpg" ,"status": 200}
+            else:
+                return {"message": "No account found", "status": 400}
         else:
             return {"error": "The request failed"}
 
@@ -27,7 +30,6 @@ class AccountResourceAuth(Resource):
                 {
                 "uid": account.uid,
                 "user_name": account.user_name,
-                "password": account.password
                 } for account in accounts]
         except:
             return {"message": "No account found", "status": 400}
