@@ -1,7 +1,9 @@
 import http.client
+from numpy import random
 
 conn = http.client.HTTPSConnection("api.mailgun.net")
-payload = "from=mailgun@sandboxbb982a75ac924997852a2e52acf7ad6b.mailgun.org&to=ygw11963@cuoly.com&subject=Hello&text=working?"
+code=random.randint(999999)
+payload = "from=mailgun@sandboxbb982a75ac924997852a2e52acf7ad6b.mailgun.org&to=jsf75192@cuoly.com&subject=Code authentication&text=Code authentication: \n{}".format(code)
 headers = {
   'Content-Type': 'application/x-www-form-urlencoded',
   'Authorization': 'Basic YXBpOjM3N2U0ZWEwZjc2N2MyMzhlOTdlZGRkZjYwMzAxMzhkLTZlMGZkM2E0LTg2OWVmZmYy'

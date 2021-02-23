@@ -6,6 +6,9 @@ from util import parse_params
 from flask import request
 import jwt
 import config
+from repositories import CodeAuthRepository
+import http.client
+from numpy import random
 class AccountResourceAuth(Resource):
 
     @staticmethod
@@ -14,7 +17,17 @@ class AccountResourceAuth(Resource):
             data = request.get_json()
             account = AccountRepository.logIn(user_name=data['user_name'], password=data['password'])
             if account:
-                return {"message": "Login successfully","data": {"account": {"uid":account.uid,"user_name": account.user_name}, "token": account.encode_auth_token(account.uid)}, "status": 200}
+                return {
+                        "message":"Login successfully",
+                        "data":{
+                            "account":{
+                                "uid":account.uid,
+                                "user_name":account.user_name
+                            },
+                            "token":account.encode_auth_token(account.uid)
+                        },
+                        "status":200
+                        }
             else:
                 return {"message": "Username or password does not exists", "status": 400}
         else:
@@ -56,7 +69,6 @@ class AccountResourceAuth(Resource):
         account = repository.update(user_name=user_name, password=password)
         return jsonify({"account": account.json})
 
-
 class AccountResourceUnAuth(Resource):
 
     @staticmethod
@@ -70,5 +82,40 @@ class AccountResourceUnAuth(Resource):
             account = AccountRepository.create(user_name=data["user_name"], password=data['password'])
             auth_token=account.encode_auth_token(account.uid)
             return {"message": f"Account {account.user_name} has been registered successfully.","auth_token": auth_token,"status": 200}
+        else:
+            return {"error": "The request payload is not in JSON format"}
+
+class AccountResourceSendCode(Resource):
+
+    @staticmethod
+    def post():
+        if request.is_json:
+            data = request.get_json()
+            email=data['email']
+            conn = http.client.HTTPSConnection("api.mailgun.net")
+            code_rand=random.randint(999999)
+            payload = "from=mailgun@sandboxbb982a75ac924997852a2e52acf7ad6b.mailgun.org&to={}&subject=Code authentication&text=Code authentication: \n{}".format(email, code_rand)
+            headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic YXBpOjM3N2U0ZWEwZjc2N2MyMzhlOTdlZGRkZjYwMzAxMzhkLTZlMGZkM2E0LTg2OWVmZmYy'
+            }
+            conn.request("POST", "/v3/sandboxbb982a75ac924997852a2e52acf7ad6b.mailgun.org/messages", payload, headers)
+            code = CodeAuthRepository.create(code=code_rand)
+            res = conn.getresponse()
+            data = res.read()
+            if(data.decode("utf8")):
+                    return {"message":"Send code success"}
+        else:
+            return {"error": "The request payload is not in JSON format"}
+
+
+class AccountResourceResetPassword(Resource):
+    @staticmethod
+    def post():
+        if request.is_json:
+            data = request.get_json()
+            email=data['email']
+            code=data['code']
+            return {"message": "Reset password success"}
         else:
             return {"error": "The request payload is not in JSON format"}
