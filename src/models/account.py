@@ -32,14 +32,3 @@ class Account(db.Model, BaseModel, metaclass=MetaBaseModel):
             )
         except Exception as e:
             return e
-
-
-    # def send_simple_message(self):
-    #     return requests.post(
-    #         "https://api.mailgun.net/v3/sandboxd8ea675e402444de81ade49809e91f17.mailgun.org/messages",
-    #         auth=("api", "c775d486eef6f5b35b8db0f23a67ba7d-6e0fd3a4-45152b39"),
-    #         data={"from": "Excited User <mailgun@sandboxd8ea675e402444de81ade49809e91f17.mailgun.org>",
-    #             "to": ["ducphan.24hdev@gmail.com", "duc@sandboxd8ea675e402444de81ade49809e91f17.mailgun.org"],
-    #             "subject": "Hello",
-    #             "text": "Testing some Mailgun awesomness!"})
-    

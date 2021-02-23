@@ -5,3 +5,4 @@ db = SQLAlchemy()
 from .account import Account
 from .site import Site
 from .line import Line
+from .code_auth import CodeAuth

@@ -13,7 +13,6 @@ class AccountResourceAuth(Resource):
         if request.is_json:
             data = request.get_json()
             account = AccountRepository.logIn(user_name=data['user_name'], password=data['password'])
-            account.send_simple_message()
             if account:
                 return {"message": "Login successfully","data": {"account": {"uid":account.uid,"user_name": account.user_name}, "token": account.encode_auth_token(account.uid)}, "status": 200}
             else:
