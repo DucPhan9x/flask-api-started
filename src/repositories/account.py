@@ -20,10 +20,13 @@ class AccountRepository:
         return Account.query.filter_by(uid=uid).first()
 
     @staticmethod
-    def update(self, user_name, password):
-        account = self.get(uid)
-        account.user_name = user_name
-        account.password = password
+    def getUserByEmail(user_name):
+        return Account.query.filter_by(user_name=user_name).first()
+
+    @staticmethod
+    def update(uid, password):
+        account = Account.query.filter_by(uid=uid).first()
+        account.password = bcrypt.generate_password_hash(password.encode("utf-8")).decode('utf8')
 
         return account.save()
 

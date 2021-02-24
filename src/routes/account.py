@@ -15,9 +15,12 @@ Api(ACCOUNT_BLUEPRINT_LOGIN).add_resource(AccountResourceAuth, "/account/login")
 ACCOUNT_BLUEPRINT_REGISTER= Blueprint("account_register", __name__)
 Api(ACCOUNT_BLUEPRINT_REGISTER).add_resource(AccountResourceUnAuth, "/account/register")
 
+ACCOUNT_BLUEPRINT_UPDATE= Blueprint("account_update", __name__)
+Api(ACCOUNT_BLUEPRINT_UPDATE).add_resource(AccountResourceAuth, "/account/update")
+
 ACCOUNT_BLUEPRINT_SEND_CODE= Blueprint("account_send_code_auth", __name__)
 Api(ACCOUNT_BLUEPRINT_SEND_CODE).add_resource(AccountResourceSendCode, "/account/send/code_auth")
 
-ACCOUNT_BLUEPRINT_REGISTER= Blueprint("account_reset_password", __name__)
-Api(ACCOUNT_BLUEPRINT_REGISTER).add_resource(AccountResourceResetPassword, "/account/reset/password")
+ACCOUNT_BLUEPRINT_RESET_PASSWORD= Blueprint("account_reset_password", __name__)
+Api(ACCOUNT_BLUEPRINT_RESET_PASSWORD).add_resource(AccountResourceResetPassword, "/account/reset/password")
 

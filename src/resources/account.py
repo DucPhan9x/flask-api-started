@@ -9,6 +9,8 @@ import config
 from repositories import CodeAuthRepository
 import http.client
 from numpy import random
+import bcrypt
+import datetime
 class AccountResourceAuth(Resource):
 
     @staticmethod
@@ -63,11 +65,23 @@ class AccountResourceAuth(Resource):
 
     
 
-    @staticmethod
-    def put(user_name, password):
-        repository = AccountRepository()
-        account = repository.update(user_name=user_name, password=password)
-        return jsonify({"account": account.json})
+    # @staticmethod
+    # def put():
+    #         try:
+    #             if request.is_json:
+    #                 data=request.get_json()
+    #                 codes_auth=CodeAuthRepository.getAll()
+    #                 for code_auth in codes_auth:
+    #                     if(code_auth.code == data['code']):
+    #                             account = AccountRepository.update(uid=resp, password=data['new_password'])
+    #                             if(account):
+    #                                 payload['exp']=datetime.datetime.utcnow()+datetime.timedelta(days=0, seconds=1)
+    #                                 return {"message": "Update success", "uid": account.uid, "status": 200}
+    #                             else:
+    #                                 return {"message": "Update failed", "status": 400}
+    #                 return {"message": "Code authentication invalid", "status": 400}
+    #         except Exception as e:
+    #             return {"error": e}
 
 class AccountResourceUnAuth(Resource):
 
@@ -99,23 +113,37 @@ class AccountResourceSendCode(Resource):
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Basic YXBpOjM3N2U0ZWEwZjc2N2MyMzhlOTdlZGRkZjYwMzAxMzhkLTZlMGZkM2E0LTg2OWVmZmYy'
             }
-            conn.request("POST", "/v3/sandboxbb982a75ac924997852a2e52acf7ad6b.mailgun.org/messages", payload, headers)
-            code = CodeAuthRepository.create(code=code_rand)
-            res = conn.getresponse()
-            data = res.read()
-            if(data.decode("utf8")):
-                    return {"message":"Send code success"}
+            try:
+                conn.request("POST", "/v3/sandboxbb982a75ac924997852a2e52acf7ad6b.mailgun.org/messages", payload, headers)
+                code = CodeAuthRepository.create(code=code_rand, email=email)
+                res = conn.getresponse()
+                data = res.read()
+                if(code):
+                    return {"message":"Send code success", "data": data.decode("utf8")}
+                else:
+                    return {"message": "Send code failed"}
+            except:
+                return {"error": "The request failed"}
         else:
             return {"error": "The request payload is not in JSON format"}
 
 
 class AccountResourceResetPassword(Resource):
-    @staticmethod
-    def post():
-        if request.is_json:
-            data = request.get_json()
-            email=data['email']
-            code=data['code']
-            return {"message": "Reset password success"}
-        else:
-            return {"error": "The request payload is not in JSON format"}
+     @staticmethod
+     def put():
+            try:
+                if request.is_json:
+                    data=request.get_json()
+                    codes_auth=CodeAuthRepository.getAll()
+                    for code_auth in codes_auth:
+                        if(code_auth.code == data['code']):
+                            if(data['email'] == code_auth.email):
+                                        user=AccountRepository.getUserByEmail(data['user_name'])
+                                        account = AccountRepository.update(uid=user.uid, password=data['new_password'])
+                                        if account.uid:
+                                            return {"message": "Update success"}
+                                        else:
+                                            return {"message": "Update failed", "status": 400}
+                    return {"message": "Code authentication invalid", "status": 400}
+            except Exception as e:
+                return {"error": e}
