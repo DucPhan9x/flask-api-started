@@ -95,6 +95,7 @@ class AccountResourceUnAuth(Resource):
                     return {"message": f"Username {data['user_name']} already exists.", "status": 400}
             account = AccountRepository.create(user_name=data["user_name"], password=data['password'])
             auth_token=account.encode_auth_token(account.uid)
+            print(auth_token)
             return {"message": f"Account {account.user_name} has been registered successfully.","auth_token": auth_token,"status": 200}
         else:
             return {"error": "The request payload is not in JSON format"}
@@ -137,13 +138,16 @@ class AccountResourceResetPassword(Resource):
                     codes_auth=CodeAuthRepository.getAll()
                     for code_auth in codes_auth:
                         if(code_auth.code == data['code']):
-                            if(data['email'] == code_auth.email):
-                                        user=AccountRepository.getUserByEmail(data['user_name'])
-                                        account = AccountRepository.update(uid=user.uid, password=data['new_password'])
-                                        if account.uid:
-                                            return {"message": "Update success"}
-                                        else:
-                                            return {"message": "Update failed", "status": 400}
+                            try:
+                                if(data['user_name'] == code_auth.email):
+                                            user=AccountRepository.getUserByEmail(data['user_name'])
+                                            account = AccountRepository.update(uid=user.uid, password=data['new_password'])
+                                            if account.uid:
+                                                return {"message": "Update success"}
+                                            else:
+                                                return {"message": "Update failed", "status": 400}
+                            except Exception as e:
+                                print(e)
                     return {"message": "Code authentication invalid", "status": 400}
             except Exception as e:
                 return {"error": e}
