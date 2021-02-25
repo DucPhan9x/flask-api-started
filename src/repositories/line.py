@@ -4,7 +4,7 @@ from models import Line
 class LineRepository:
     @staticmethod
     def get(line_id):
-        return Line.query.filter_by(line_id=line_id).one()
+        return Line.query.filter_by(line_id=line_id).first()
 
     def update(self, line_id, site_id, line_name):
         line = self.get(line_id)

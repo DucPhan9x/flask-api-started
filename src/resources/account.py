@@ -63,26 +63,6 @@ class AccountResourceAuth(Resource):
             return {"message": "No account found", "status": 400}
         return ({"accounts": results, "status": 200})
 
-    
-
-    # @staticmethod
-    # def put():
-    #         try:
-    #             if request.is_json:
-    #                 data=request.get_json()
-    #                 codes_auth=CodeAuthRepository.getAll()
-    #                 for code_auth in codes_auth:
-    #                     if(code_auth.code == data['code']):
-    #                             account = AccountRepository.update(uid=resp, password=data['new_password'])
-    #                             if(account):
-    #                                 payload['exp']=datetime.datetime.utcnow()+datetime.timedelta(days=0, seconds=1)
-    #                                 return {"message": "Update success", "uid": account.uid, "status": 200}
-    #                             else:
-    #                                 return {"message": "Update failed", "status": 400}
-    #                 return {"message": "Code authentication invalid", "status": 400}
-    #         except Exception as e:
-    #             return {"error": e}
-
 class AccountResourceUnAuth(Resource):
 
     @staticmethod
